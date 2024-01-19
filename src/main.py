@@ -1,8 +1,8 @@
 import argparse
 
 import uvicorn
-from fastapi import FastAPI
 from core.database import Base, engine
+from fastapi import FastAPI
 
 app = FastAPI(arbitrary_types_allowed=True, debug=True)
 Base.metadata.create_all(bind=engine)

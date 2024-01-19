@@ -16,4 +16,4 @@ exclude = [
 
 [tool.ruff.isort]
 combine-as-imports = true
-known-local-folder = []
+known-local-folder = ['config']
