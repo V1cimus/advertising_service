@@ -1,0 +1,19 @@
+[tool.ruff]
+line-length = 79
+select = ["E", "F", "I"]
+exclude = [
+    ".git",
+    ".ruff_cache",
+    ".venv",
+    ".env",
+    "venv",
+    "env",
+    "infra",
+    "docs",
+    ".vscode",
+    "migrations"
+]
+
+[tool.ruff.isort]
+combine-as-imports = true
+known-local-folder = []
