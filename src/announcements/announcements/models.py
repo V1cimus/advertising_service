@@ -23,6 +23,7 @@ class Announcement(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     author_id = Column(Integer, ForeignKey('users.id'))
+    category_id = Column(Integer, ForeignKey('categorys.id'))
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
 

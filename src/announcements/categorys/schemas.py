@@ -5,11 +5,8 @@ class Category(BaseModel):
     id: int
     name: str
 
-    class Config:
-        from_attributes = True
 
-
-class CategoryCreate(BaseModel):
+class ShortCategory(BaseModel):
     name: str
 
     class Config:

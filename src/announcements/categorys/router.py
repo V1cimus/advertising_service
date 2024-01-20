@@ -35,11 +35,12 @@ def get_by_id(id: int, db: Session = Depends(get_db)):
 @router.post(
     '/',
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.CategoryCreate,
+    response_model=schemas.ShortCategory,
 )
-def create(request: schemas.CategoryCreate, db: Session = Depends(get_db)):
+def create(request: schemas.ShortCategory, db: Session = Depends(get_db)):
     """
-    Creates a new category based on the request data and adds it to the database.
+    Creates a new category based on
+    the request data and adds it to the database.
     """
     check_if_already_registered(models.Category, request.dict(), db)
     category = models.Category(**request.dict())
@@ -52,10 +53,10 @@ def create(request: schemas.CategoryCreate, db: Session = Depends(get_db)):
 @router.patch(
     '/{id}/',
     status_code=status.HTTP_200_OK,
-    response_model=schemas.CategoryCreate,
+    response_model=schemas.ShortCategory,
 )
 def update(
-    id: int, request: schemas.CategoryCreate,
+    id: int, request: schemas.ShortCategory,
     db: Session = Depends(get_db)
 ):
     """
