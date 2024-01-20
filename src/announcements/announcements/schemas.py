@@ -17,7 +17,6 @@ class ShowAnnouncement(BaseModel):
 
 
 class CreateAnnouncement(BaseModel):
-    author_id: int
     category_id: int
     title: str = Field(max_length=128)
     content: str = Field(max_length=4096)

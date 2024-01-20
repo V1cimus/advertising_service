@@ -1,12 +1,14 @@
 from datetime import timedelta
+from typing import Annotated
 
 from core.database import get_db
 from core.db_utils import check_if_already_registered, get_obj_or_404
 from core.hashing import hash_password
 from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm as LoginForm
 from sqlalchemy.orm import Session
 
-from . import authenticate as authenticate, models, schemas
+from . import authenticate, models, schemas
 from config import settings
 
 router_auth = APIRouter()
@@ -35,16 +37,16 @@ def register(
     return user
 
 
-@router_auth.post('/login')
+@router_auth.post('/login/', response_model=schemas.Token)
 def login(
-    request: schemas.LoginUser,
-    db: Session = Depends(get_db)
+    form_data: Annotated[LoginForm, Depends()],
+    db: Session = Depends(get_db),
 ):
     """
     Authenticates a user and generates an access token.
     """
     user = authenticate.authenticate_user(
-        request.email, request.password, db
+        form_data.username, form_data.password, db
     )
     access_token_expires = timedelta(seconds=settings.ACCESS_TOKEN_LIFETIME)
     access_token = authenticate.create_access_token(
@@ -58,7 +60,11 @@ def login(
     status_code=status.HTTP_200_OK,
     response_model=schemas.ShowUser,
     )
-def ban_user(id: int, db: Session = Depends(get_db)):
+def ban_user(
+    id: int,
+    _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
+    db: Session = Depends(get_db)
+):
     """
     Sets the ban status of a user.
     """
@@ -74,7 +80,11 @@ def ban_user(id: int, db: Session = Depends(get_db)):
     status_code=status.HTTP_200_OK,
     response_model=schemas.ShowUser,
 )
-def set_admin_user(id: int, db: Session = Depends(get_db),):
+def set_admin_user(
+    id: int,
+    _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
+    db: Session = Depends(get_db),
+):
     """
     Sets the admin status of a user identified by the given ID.
     """

@@ -1,10 +1,13 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from ..announcements.models import Announcement
 from . import models, schemas
+from users import authenticate
+from users.schemas import UserInDB
+
 
 router = APIRouter()
 
@@ -14,7 +17,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     response_model=list[schemas.ShowComment],
 )
-def get_all(id: int, db: Session = Depends(get_db)):
+def get_all(id: int, db: Session = Depends(get_db),):
     """
     Get all comments from the database.
     """
@@ -31,6 +34,7 @@ def get_all(id: int, db: Session = Depends(get_db)):
 )
 def create(
     id: int, request: schemas.CreateComment,
+    user: UserInDB = Depends(authenticate.get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -40,6 +44,7 @@ def create(
     get_obj_or_404(Announcement, db, id=id)
     request_data = request.dict()
     request_data['announcement_id'] = id
+    request_data['author_id'] = user.id
     comment = models.Comment(**request_data)
     db.add(comment)
     db.commit()
@@ -57,6 +62,7 @@ def update(
     comment_id: int,
     request: schemas.UpdateComment,
     db: Session = Depends(get_db),
+    user: UserInDB = Depends(authenticate.get_current_user),
 ):
     """
     Updates a comment based on
@@ -66,18 +72,28 @@ def update(
     comment = get_obj_or_404(
         models.Comment, db, id=comment_id
     )
-    comment.text = request.text
-    db.add(comment)
-    db.commit()
-    db.refresh(comment)
-    return comment
+    if comment.author_id == user.id:
+        comment.text = request.text
+        db.add(comment)
+        db.commit()
+        db.refresh(comment)
+        return comment
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail='Вы не можете редактировать этот комментарий',
+    )
 
 
 @router.delete(
     '/{id}/comments/{comment_id}',
     status_code=status.HTTP_200_OK,
 )
-def delete(id: int, comment_id: int, db: Session = Depends(get_db)):
+def delete(
+    id: int,
+    comment_id: int,
+    user: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Deletes a comment based on
     the request data and adds it to the database.
@@ -86,6 +102,11 @@ def delete(id: int, comment_id: int, db: Session = Depends(get_db)):
     comment = get_obj_or_404(
         models.Comment, db, id=comment_id, announcement_id=id
     )
-    db.delete(comment)
-    db.commit()
-    return {'message': 'Комментарий удален'}
+    if comment.author_id == user.id or user.admin:
+        db.delete(comment)
+        db.commit()
+        return {'message': 'Комментарий удален'}
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail='Вы не можете удалить этот комментарий',
+    )

@@ -1,10 +1,12 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from ..categorys.models import Category
 from . import models, schemas
+from users import authenticate
+from users.schemas import UserInDB
 
 router = APIRouter()
 
@@ -38,13 +40,19 @@ def get_by_id(id: int, db: Session = Depends(get_db)):
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.ShowAnnouncement,
 )
-def create(request: schemas.CreateAnnouncement, db: Session = Depends(get_db)):
+def create(
+    request: schemas.CreateAnnouncement,
+    user: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Creates a new announcement based on
     the request data and adds it to the database.
     """
+    request_data = request.dict()
+    request_data['author_id'] = user.id
     get_obj_or_404(Category, db, id=request.category_id)
-    announcement = models.Announcement(**request.dict())
+    announcement = models.Announcement(**request_data)
     db.add(announcement)
     db.commit()
     db.refresh(announcement)
@@ -58,13 +66,20 @@ def create(request: schemas.CreateAnnouncement, db: Session = Depends(get_db)):
 )
 def update(
     id: int, request: schemas.UpdateAnnouncement,
-    db: Session = Depends(get_db)
+    user: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Updates an announcement by its ID.
     """
     announcement = get_obj_or_404(models.Announcement, db, id=id)
-    get_obj_or_404(Category, db, id=request.category_id)
+    if announcement.author_id != user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Нельзя редактировать чужое объявление'
+        )
+    if request.category_id is not None:
+        get_obj_or_404(Category, db, id=request.category_id)
     for key, value in request.dict().items():
         if value is not None:
             print(key, value)
@@ -80,11 +95,20 @@ def update(
     '/{id}/',
     status_code=status.HTTP_200_OK,
 )
-def delete(id: int, db: Session = Depends(get_db)):
+def delete(
+    id: int,
+    user: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Deletes an announcement by its ID.
     """
     announcement = get_obj_or_404(models.Announcement, db, id=id)
-    db.delete(announcement)
-    db.commit()
-    return {'message': 'Объявление удалено'}
+    if announcement.author_id == user.id or user.admin:
+        db.delete(announcement)
+        db.commit()
+        return {'message': 'Объявление удалено'}
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail='Вы не можете удалить это объявление'
+    )

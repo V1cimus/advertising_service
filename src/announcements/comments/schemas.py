@@ -13,7 +13,6 @@ class ShowComment(BaseModel):
 
 class CreateComment(BaseModel):
     text: str = Field(max_length=4096)
-    author_id: int
 
     class Config:
         from_attributes = True

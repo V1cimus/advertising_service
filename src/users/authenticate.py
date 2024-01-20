@@ -13,8 +13,9 @@ from .models import User as DB_User
 from .schemas import UserInDB
 from config import settings
 
+
 db = SessionLocal()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login/')
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -35,22 +36,22 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def get_user(db: Session, email: str):
+def get_user(db: Session, username: str):
     """
     Retrieves a user from the database based on the given email.
     """
-    user = get_obj_or_404(DB_User, db, email=email)
+    user = get_obj_or_404(DB_User, db, username=username)
     user_dict = {key: value for key, value in user.__dict__.items()
                  if key != '_sa_instance_state'}
     return UserInDB(**user_dict)
 
 
-def authenticate_user(email: str, password: str, db: Session):
+def authenticate_user(username: str, password: str, db: Session):
     """
     Authenticates a user by checking if the given username
     and password match an entry in the database.
     """
-    user = get_user(db=db, email=email)
+    user = get_user(db=db, username=username)
     if not verify_password(password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -80,4 +81,21 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     current_user = get_user(db=db, username=username)
     if current_user is None:
         raise credentials_exception
+    if current_user.banned:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Пользователь заблокирован',
+        )
     return current_user
+
+
+def get_current_admin_user(user: UserInDB = Depends(get_current_user)):
+    """
+    Get the current admin user.
+    """
+    if not user.admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Только для администратора',
+        )
+    return user

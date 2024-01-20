@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from . import models, schemas
+from users import authenticate
+from users.schemas import UserInDB
 
 router = APIRouter()
 
@@ -37,7 +39,11 @@ def get_by_id(id: int, db: Session = Depends(get_db)):
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.ShortCategory,
 )
-def create(request: schemas.ShortCategory, db: Session = Depends(get_db)):
+def create(
+    request: schemas.ShortCategory,
+    _: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Creates a new category based on
     the request data and adds it to the database.
@@ -57,6 +63,7 @@ def create(request: schemas.ShortCategory, db: Session = Depends(get_db)):
 )
 def update(
     id: int, request: schemas.ShortCategory,
+    _: UserInDB = Depends(authenticate.get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -74,7 +81,11 @@ def update(
     '/{id}/',
     status_code=status.HTTP_200_OK,
 )
-def delete(id: int, db: Session = Depends(get_db)):
+def delete(
+    id: int,
+    _: UserInDB = Depends(authenticate.get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Deletes a category by its ID.
     """
