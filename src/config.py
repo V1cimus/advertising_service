@@ -16,7 +16,9 @@ class DBSettings(BaseSettings):
 class Settings(BaseSettings):
     DATA_BASE: DBSettings = DBSettings()
     SECRET: str
-    COOKIES_LIFETIME: int
+    ACCESS_TOKEN_LIFETIME: int
+    JWT_ALGORITHM: str
+    API_URL: str = '/api/v1'
 
 
 settings = Settings()
