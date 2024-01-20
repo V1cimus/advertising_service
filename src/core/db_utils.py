@@ -3,12 +3,12 @@ from typing import Any, Type
 
 from fastapi import HTTPException, status
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 from sqlalchemy import or_
+from sqlalchemy.orm import Session
+from users import models, schemas
 
 from .database import SessionLocal
 from .hashing import hash_password
-from users import models, schemas
 
 db = SessionLocal()
 

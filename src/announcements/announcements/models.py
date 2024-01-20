@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from core.database import Base
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-from core.database import Base
-
+from ..comments.models import Comment
 
 association_categorys_announcements = Table(
     'categorys_announcements',
@@ -25,11 +25,10 @@ class Announcement(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    category_id = Column(Integer, ForeignKey('categorys.id'))
 
     author = relationship('User', back_populates='announcement')
     category = relationship(
         'Category', secondary=association_categorys_announcements,
         back_populates='announcements'
     )
-    comments = relationship('Comment', back_populates='blog')
+    comments = relationship(Comment, back_populates='announcement')

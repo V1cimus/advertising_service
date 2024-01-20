@@ -1,12 +1,12 @@
 from datetime import timedelta
 
+from core.database import get_db
+from core.db_utils import check_if_already_registered, get_obj_or_404
+from core.hashing import hash_password
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from . import authenticate as authenticate, models, schemas
-from core.database import get_db
-from core.db_utils import check_if_already_registered, get_obj_or_404
-from core.hashing import hash_password
 from config import settings
 
 router_auth = APIRouter()

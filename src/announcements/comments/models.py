@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-
 from core.database import Base
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class Comment(Base):
@@ -9,6 +8,7 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     author_id = Column(Integer, ForeignKey('users.id'))
+    announcement_id = Column(Integer, ForeignKey('announcements.id'))
     text = Column(String)
 
     author = relationship('User', back_populates='comment')

@@ -1,7 +1,8 @@
+from core.database import Base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from core.database import Base
+from ..announcements.models import association_categorys_announcements
 
 
 class Category(Base):
@@ -10,4 +11,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
 
-    announcements = relationship('Announcement', back_populates='category')
+    announcements = relationship(
+        'Announcement', secondary=association_categorys_announcements,
+        back_populates='category',
+    )

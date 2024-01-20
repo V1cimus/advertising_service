@@ -1,6 +1,6 @@
-from sqlalchemy import Boolean, Column, Integer, String
-
 from core.database import Base
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -15,3 +15,6 @@ class User(Base):
     superuser = Column(Boolean, default=False)
     admin = Column(Boolean, default=False)
     banned = Column(Boolean, default=False)
+
+    announcement = relationship('Announcement', back_populates='author')
+    comment = relationship('Comment', back_populates='author')
