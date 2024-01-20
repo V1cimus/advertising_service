@@ -1,15 +1,19 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 from ..categorys.schemas import Category
+from ..comments.schemas import ShowComment
+from users.schemas import ShowUser
 
 
 class ShowAnnouncement(BaseModel):
     id: int
+    author: ShowUser
     title: str
     content: str
     category: Category
+    comments: List[ShowComment]
 
 
 class CreateAnnouncement(BaseModel):

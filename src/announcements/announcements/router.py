@@ -78,7 +78,7 @@ def update(
 
 @router.delete(
     '/{id}/',
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
 )
 def delete(id: int, db: Session = Depends(get_db)):
     """
