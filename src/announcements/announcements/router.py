@@ -1,8 +1,9 @@
 from core.database import get_db
-from core.db_utils import check_if_already_registered, get_obj_or_404
+from core.db_utils import get_obj_or_404
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from ..categorys.models import Category
 from . import models, schemas
 
 router = APIRouter()
@@ -42,6 +43,7 @@ def create(request: schemas.CreateAnnouncement, db: Session = Depends(get_db)):
     Creates a new announcement based on
     the request data and adds it to the database.
     """
+    get_obj_or_404(Category, db, id=request.category_id)
     announcement = models.Announcement(**request.dict())
     db.add(announcement)
     db.commit()
@@ -55,15 +57,19 @@ def create(request: schemas.CreateAnnouncement, db: Session = Depends(get_db)):
     response_model=schemas.ShowAnnouncement,
 )
 def update(
-    id: int, request: schemas.CreateAnnouncement,
+    id: int, request: schemas.UpdateAnnouncement,
     db: Session = Depends(get_db)
 ):
     """
     Updates an announcement by its ID.
     """
     announcement = get_obj_or_404(models.Announcement, db, id=id)
+    get_obj_or_404(Category, db, id=request.category_id)
     for key, value in request.dict().items():
-        setattr(announcement, key, value)
+        if value is not None:
+            print(key, value)
+            setattr(announcement, key, value)
+    print(announcement.__dict__)
     db.add(announcement)
     db.commit()
     db.refresh(announcement)
