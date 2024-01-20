@@ -8,6 +8,9 @@ from alembic import context
 
 from config import settings
 from users.models import Base as UserBase
+from announcements.announcements.models import Base as AnnouncementBase
+from announcements.categorys.models import Base as CategoryBase
+from announcements.comments.models import Base as CommentBase
 
 
 load_dotenv()
@@ -34,6 +37,9 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = UserBase.metadata
+target_metadata = AnnouncementBase.metadata
+target_metadata = CategoryBase.metadata
+target_metadata = CommentBase.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

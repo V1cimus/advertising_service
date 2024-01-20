@@ -12,11 +12,6 @@ from users import models, schemas
 
 db = SessionLocal()
 
-fields_names = {
-    'username': 'Имя пользователя',
-    'email': 'Адрес электронной почты',
-}
-
 
 def check_if_already_registered(
             model: BaseModel, fields: dict, db: Session
