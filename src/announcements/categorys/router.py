@@ -41,7 +41,7 @@ def get_by_id(id: int, db: Session = Depends(get_db)):
 )
 def create(
     request: schemas.ShortCategory,
-    _: UserInDB = Depends(authenticate.get_current_user),
+    _: UserInDB = Depends(authenticate.get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -63,7 +63,7 @@ def create(
 )
 def update(
     id: int, request: schemas.ShortCategory,
-    _: UserInDB = Depends(authenticate.get_current_user),
+    _: UserInDB = Depends(authenticate.get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -83,7 +83,7 @@ def update(
 )
 def delete(
     id: int,
-    _: UserInDB = Depends(authenticate.get_current_user),
+    _: UserInDB = Depends(authenticate.get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """
