@@ -6,8 +6,8 @@ load_dotenv()
 
 class DBSettings(BaseSettings):
     DB_PORT: str
-    DB_PASSWORD: str
-    DB_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_USER: str
     DB_NAME: str
     DB_HOST: str
     DB_ENGINE: str

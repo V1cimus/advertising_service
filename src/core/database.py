@@ -8,12 +8,11 @@ dbsettings = settings.DATA_BASE
 
 DATABASE_URL = (
     f'{dbsettings.DB_ENGINE}://'
-    + f'{dbsettings.DB_USER}:{dbsettings.DB_PASSWORD}'
+    + f'{dbsettings.POSTGRES_USER}:{dbsettings.POSTGRES_PASSWORD}'
     + f'@{dbsettings.DB_HOST}:{dbsettings.DB_PORT}/{dbsettings.DB_NAME}'
 )
-DATABASE_URL = 'sqlite:///./db.sqlite3'
 
-engine = create_engine(DATABASE_URL, connect_args={'check_same_thread': False})
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
