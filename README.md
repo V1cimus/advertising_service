@@ -25,7 +25,7 @@ py -3.11 -m venv venv
 source venv/Scripts/activate
 ```
 
-И выполните установите необходимые библиотеки.
+И установите необходимые библиотеки.
 
 ```bash
 pip install -r requirements.txt
