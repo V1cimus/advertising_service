@@ -17,7 +17,7 @@ class ShowAnnouncement(BaseModel):
     created_at: Optional[datetime] = datetime.now().strftime(
         '%Y-%m-%d %H:%M:%S'
     )
-    comments: List[ShowComment] = Field(max_items=10)
+    comments: List[ShowComment]
 
 
 class CreateAnnouncement(BaseModel):

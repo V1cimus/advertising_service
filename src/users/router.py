@@ -56,7 +56,7 @@ def login(
 
 
 @router_user.post(
-    '/{id}/set_ban/',
+    '/{id}/set-ban/',
     status_code=status.HTTP_200_OK,
     response_model=schemas.ShowUser,
     )
@@ -76,7 +76,7 @@ def ban_user(
 
 
 @router_user.post(
-    '/{id}/set_admin/',
+    '/{id}/set-admin/',
     status_code=status.HTTP_200_OK,
     response_model=schemas.ShowUser,
 )

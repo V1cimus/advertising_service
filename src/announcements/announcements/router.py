@@ -1,6 +1,7 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_filter import FilterDepends
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
@@ -8,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..categorys.models import Category
 from . import models, schemas
+from .filters import AnnouncementFilter
 from users import authenticate
 from users.schemas import UserInDB
 
@@ -20,12 +22,16 @@ router = APIRouter()
     response_model=Page[schemas.ShowAnnouncement],
 )
 def get_all(
-    db: Session = Depends(get_db)
+    items_filter: AnnouncementFilter = FilterDepends(AnnouncementFilter),
+    db: Session = Depends(get_db),
 ) -> Page[schemas.ShowAnnouncement]:
     """
     Get all announcements from the database.
     """
-    return paginate(db, select(models.Announcement))
+    announcements = select(models.Announcement)
+    announcements = items_filter.filter(announcements)
+    announcements = items_filter.sort(announcements)
+    return paginate(db, announcements)
 
 
 @router.get(
