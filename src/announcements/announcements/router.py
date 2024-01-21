@@ -1,6 +1,6 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select

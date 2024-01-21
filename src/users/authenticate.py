@@ -13,7 +13,6 @@ from .models import User as DB_User
 from .schemas import UserInDB
 from config import settings
 
-
 db = SessionLocal()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login/')
 
