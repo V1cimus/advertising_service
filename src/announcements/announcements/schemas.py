@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from ..categorys.schemas import Category
-from ..comments.schemas import ShowComment
+from ..comments.schemas import ShowShortComment
 from users.schemas import ShowUser
 
 
@@ -17,7 +17,14 @@ class ShowAnnouncement(BaseModel):
     created_at: Optional[datetime] = datetime.now().strftime(
         '%Y-%m-%d %H:%M:%S'
     )
-    comments: List[ShowComment]
+    comments: List[ShowShortComment]
+
+
+class ShowShortAnnouncement(BaseModel):
+    id: int
+    title: str
+    category: Category
+    author: ShowUser
 
 
 class CreateAnnouncement(BaseModel):

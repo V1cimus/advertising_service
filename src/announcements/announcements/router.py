@@ -27,6 +27,7 @@ def get_all(
 ) -> Page[schemas.ShowAnnouncement]:
     """
     Get all announcements from the database.
+    Permission: Allow Any
     """
     announcements = select(models.Announcement)
     announcements = items_filter.filter(announcements)
@@ -42,6 +43,7 @@ def get_all(
 def get_by_id(id: int, db: Session = Depends(get_db)):
     """
     Get an announcement by its ID.
+    Permission: Allow Any
     """
     return get_obj_or_404(models.Announcement, db, id=id)
 
@@ -59,6 +61,7 @@ def create(
     """
     Creates a new announcement based on
     the request data and adds it to the database.
+    Permission: User
     """
     request_data = request.dict()
     request_data['author_id'] = user.id
@@ -82,6 +85,7 @@ def update(
 ):
     """
     Updates an announcement by its ID.
+    Permission: Author
     """
     announcement = get_obj_or_404(models.Announcement, db, id=id)
     if announcement.author_id != user.id:
@@ -113,6 +117,7 @@ def delete(
 ):
     """
     Deletes an announcement by its ID.
+    Permission: Author or Admin
     """
     announcement = get_obj_or_404(models.Announcement, db, id=id)
     if announcement.author_id == user.id or user.admin:

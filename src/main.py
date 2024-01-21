@@ -8,6 +8,7 @@ from fastapi_pagination import add_pagination
 from announcements.announcements.router import router as router_announcements
 from announcements.categorys.router import router as router_category
 from announcements.comments.router import router as router_comments
+from announcements.complaints.router import router as router_complaints
 from config import settings
 from users.router import router_auth, router_user
 
@@ -29,6 +30,10 @@ app.include_router(
 app.include_router(
     router_comments, prefix=f'{settings.API_URL}/announcements',
     tags=['Comments'],
+)
+app.include_router(
+    router_complaints, prefix=f'{settings.API_URL}/announcements',
+    tags=['Complaints'],
 )
 add_pagination(app)
 

@@ -4,8 +4,6 @@ from core.database import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from ..comments.models import Comment
-
 
 class Announcement(Base):
     __tablename__ = 'announcements'
@@ -19,4 +17,5 @@ class Announcement(Base):
 
     author = relationship('User', back_populates='announcement')
     category = relationship('Category', back_populates='announcements')
-    comments = relationship(Comment, back_populates='announcement')
+    comments = relationship('Comment', back_populates='announcement')
+    complaint = relationship('Complaint', back_populates='announcement')

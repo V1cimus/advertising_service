@@ -11,6 +11,12 @@ class ShowComment(BaseModel):
     text: str
     author: ShowUser
     created_at: Optional[datetime]
+    announcement_id: int
+
+
+class ShowShortComment(BaseModel):
+    id: int
+    text: str
 
 
 class CreateComment(BaseModel):

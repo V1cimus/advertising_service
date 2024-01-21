@@ -20,6 +20,7 @@ router = APIRouter()
 def get_all(db: Session = Depends(get_db)):
     """
     Get all categories from the database.
+    Permission: Allow Any
     """
     return db.query(models.Category).all()
 
@@ -32,6 +33,7 @@ def get_all(db: Session = Depends(get_db)):
 def get_by_id(id: int, db: Session = Depends(get_db)):
     """
     Get a category by its ID.
+    Permission: Allow Any
     """
     return get_obj_or_404(models.Category, db, id=id)
 
@@ -49,6 +51,7 @@ def create(
     """
     Creates a new category based on
     the request data and adds it to the database.
+    Permission: Admin
     """
     check_if_already_registered(models.Category, request.dict(), db)
     category = models.Category(**request.dict())
@@ -70,6 +73,7 @@ def update(
 ):
     """
     Update a category by ID.
+    Permission: Admin
     """
     category = get_obj_or_404(models.Category, db, id=id)
     category.name = request.name
@@ -90,6 +94,7 @@ def delete(
 ):
     """
     Deletes a category by its ID.
+    Permission: Admin
     """
     category = get_obj_or_404(models.Category, db, id=id)
     db.delete(category)

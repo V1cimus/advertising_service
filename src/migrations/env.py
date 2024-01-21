@@ -11,6 +11,7 @@ from users.models import Base as UserBase
 from announcements.announcements.models import Base as AnnouncementBase
 from announcements.categorys.models import Base as CategoryBase
 from announcements.comments.models import Base as CommentBase
+from announcements.complaints.models import Base as ComplaintBase
 
 
 load_dotenv()
@@ -40,6 +41,7 @@ target_metadata = UserBase.metadata
 target_metadata = AnnouncementBase.metadata
 target_metadata = CategoryBase.metadata
 target_metadata = CommentBase.metadata
+target_metadata = ComplaintBase.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

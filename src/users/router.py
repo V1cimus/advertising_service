@@ -25,6 +25,7 @@ def register(
 ):
     """
     Register a new user.
+    Permission: Allow Any
     """
     user_dict = request.dict()
     check_if_already_registered(models.User, user_dict, db)
@@ -44,6 +45,7 @@ def login(
 ):
     """
     Authenticates a user and generates an access token.
+    Permission: Allow Any
     """
     user = authenticate.authenticate_user(
         form_data.username, form_data.password, db
@@ -62,11 +64,12 @@ def login(
     )
 def ban_user(
     id: int,
-    # _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
+    _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """
     Sets the ban status of a user.
+    Permission: Admin
     """
     user = get_obj_or_404(models.User, db, id=id)
     user.banned = not user.banned
@@ -87,6 +90,7 @@ def set_admin_user(
 ):
     """
     Sets the admin status of a user identified by the given ID.
+    Permission: Admin
     """
     user = get_obj_or_404(models.User, db, id=id)
     user.admin = not user.admin

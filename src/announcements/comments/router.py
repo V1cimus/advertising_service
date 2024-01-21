@@ -22,6 +22,7 @@ router = APIRouter()
 def get_all(id: int, db: Session = Depends(get_db),):
     """
     Get all comments from the database.
+    Permission: Allow Any
     """
     get_obj_or_404(Announcement, db, id=id)
     db.query(models.Comment).filter(
@@ -45,6 +46,7 @@ def create(
     """
     Creates a new comment based on
     the request data and adds it to the database.
+    Permission: User
     """
     get_obj_or_404(Announcement, db, id=id)
     request_data = request.dict()
@@ -72,6 +74,7 @@ def update(
     """
     Updates a comment based on
     the request data and adds it to the database.
+    Permission: Author
     """
     get_obj_or_404(Announcement, db, id=id)
     comment = get_obj_or_404(
@@ -102,6 +105,7 @@ def delete(
     """
     Deletes a comment based on
     the request data and adds it to the database.
+    Permission: Author or Admin
     """
     get_obj_or_404(Announcement, db, id=id)
     comment = get_obj_or_404(
