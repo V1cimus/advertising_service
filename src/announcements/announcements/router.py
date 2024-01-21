@@ -97,9 +97,7 @@ def update(
         get_obj_or_404(Category, db, id=request.category_id)
     for key, value in request.dict().items():
         if value is not None:
-            print(key, value)
             setattr(announcement, key, value)
-    print(announcement.__dict__)
     db.add(announcement)
     db.commit()
     db.refresh(announcement)

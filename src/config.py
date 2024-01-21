@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     SECRET: str
     ACCESS_TOKEN_LIFETIME: int
     JWT_ALGORITHM: str
-    API_URL: str = '/api/v1'
+    API_URL: str = '/api'
 
 
 settings = Settings()

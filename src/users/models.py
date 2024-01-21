@@ -21,3 +21,4 @@ class User(Base):
 
     announcement = relationship('Announcement', back_populates='author')
     comment = relationship('Comment', back_populates='author')
+    review = relationship('Review', back_populates='author')

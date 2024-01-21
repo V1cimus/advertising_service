@@ -25,9 +25,6 @@ def get_all(id: int, db: Session = Depends(get_db),):
     Permission: Allow Any
     """
     get_obj_or_404(Announcement, db, id=id)
-    db.query(models.Comment).filter(
-        models.Comment.announcement_id == id
-    )
     return paginate(db, select(models.Comment).where(
         models.Comment.announcement_id == id
     ))
@@ -81,7 +78,9 @@ def update(
         models.Comment, db, id=comment_id
     )
     if comment.author_id == user.id:
-        comment.text = request.text
+        for key, value in request.dict().items():
+            if value is not None:
+                setattr(comment, key, value)
         db.add(comment)
         db.commit()
         db.refresh(comment)

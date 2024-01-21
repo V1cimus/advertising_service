@@ -9,10 +9,17 @@ from announcements.announcements.router import router as router_announcements
 from announcements.categorys.router import router as router_category
 from announcements.comments.router import router as router_comments
 from announcements.complaints.router import router as router_complaints
+from announcements.review.router import router as router_review
 from config import settings
 from users.router import router_auth, router_user
 
-app = FastAPI(arbitrary_types_allowed=True, debug=True)
+app = FastAPI(
+    title='Advertising API',
+    description='API for advertising service for test SurfIt',
+    version='1.0.0',
+    arbitrary_types_allowed=True,
+    debug=True
+)
 app.include_router(
     router_auth, prefix=f'{settings.API_URL}/auth', tags=['Authentication'],
 )
@@ -34,6 +41,10 @@ app.include_router(
 app.include_router(
     router_complaints, prefix=f'{settings.API_URL}/announcements',
     tags=['Complaints'],
+)
+app.include_router(
+    router_review, prefix=f'{settings.API_URL}/announcements',
+    tags=['Reviews'],
 )
 add_pagination(app)
 

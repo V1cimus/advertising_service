@@ -18,4 +18,5 @@ class Announcement(Base):
     author = relationship('User', back_populates='announcement')
     category = relationship('Category', back_populates='announcements')
     comments = relationship('Comment', back_populates='announcement')
-    complaint = relationship('Complaint', back_populates='announcement')
+    complaints = relationship('Complaint', back_populates='announcement')
+    reviews = relationship('Review', back_populates='announcement')

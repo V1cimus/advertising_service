@@ -29,9 +29,6 @@ def get_all(
     Permission: Admin
     """
     get_obj_or_404(Announcement, db, id=id)
-    db.query(models.Complaint).filter(
-        models.Complaint.announcement_id == id
-    )
     return paginate(db, select(models.Complaint).where(
         models.Complaint.announcement_id == id
     ))

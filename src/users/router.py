@@ -68,7 +68,7 @@ def ban_user(
     db: Session = Depends(get_db)
 ):
     """
-    Sets the ban status of a user.
+    Resets the ban status of a user.
     Permission: Admin
     """
     user = get_obj_or_404(models.User, db, id=id)
@@ -89,7 +89,7 @@ def set_admin_user(
     db: Session = Depends(get_db),
 ):
     """
-    Sets the admin status of a user identified by the given ID.
+    Resets the admin status of a user identified by the given ID.
     Permission: Admin
     """
     user = get_obj_or_404(models.User, db, id=id)
