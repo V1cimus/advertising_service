@@ -1,6 +1,9 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..announcements.models import Announcement
@@ -15,16 +18,19 @@ router = APIRouter()
 @router.get(
     '/{id}/comments/',
     status_code=status.HTTP_200_OK,
-    response_model=list[schemas.ShowComment],
+    response_model=Page[schemas.ShowComment],
 )
 def get_all(id: int, db: Session = Depends(get_db),):
     """
     Get all comments from the database.
     """
     get_obj_or_404(Announcement, db, id=id)
-    return db.query(models.Comment).filter(
+    db.query(models.Comment).filter(
         models.Comment.announcement_id == id
     )
+    return paginate(db, select(models.Comment).where(
+        models.Comment.announcement_id == id
+    ))
 
 
 @router.post(

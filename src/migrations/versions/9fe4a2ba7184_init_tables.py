@@ -1,8 +1,8 @@
-"""Added initial table
+"""init tables
 
-Revision ID: 035b8057d6d3
+Revision ID: 9fe4a2ba7184
 Revises: 
-Create Date: 2024-01-20 15:38:15.157425
+Create Date: 2024-01-21 12:25:48.944064
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '035b8057d6d3'
+revision: str = '9fe4a2ba7184'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,6 +37,7 @@ def upgrade() -> None:
     sa.Column('superuser', sa.Boolean(), nullable=True),
     sa.Column('admin', sa.Boolean(), nullable=True),
     sa.Column('banned', sa.Boolean(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
@@ -46,6 +47,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
     sa.Column('content', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['users.id'], ),
@@ -58,6 +60,7 @@ def upgrade() -> None:
     sa.Column('author_id', sa.Integer(), nullable=True),
     sa.Column('announcement_id', sa.Integer(), nullable=True),
     sa.Column('text', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['announcement_id'], ['announcements.id'], ),
     sa.ForeignKeyConstraint(['author_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

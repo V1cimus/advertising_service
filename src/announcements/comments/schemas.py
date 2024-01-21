@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -9,6 +10,7 @@ class ShowComment(BaseModel):
     id: int
     text: str
     author: ShowUser
+    created_at: Optional[datetime]
 
 
 class CreateComment(BaseModel):

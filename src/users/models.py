@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from core.database import Base
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
 
@@ -15,6 +17,7 @@ class User(Base):
     superuser = Column(Boolean, default=False)
     admin = Column(Boolean, default=False)
     banned = Column(Boolean, default=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.now())
 
     announcement = relationship('Announcement', back_populates='author')
     comment = relationship('Comment', back_populates='author')

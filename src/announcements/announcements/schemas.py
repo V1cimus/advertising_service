@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -13,7 +14,10 @@ class ShowAnnouncement(BaseModel):
     title: str
     content: str
     category: Category
-    comments: List[ShowComment]
+    created_at: Optional[datetime] = datetime.now().strftime(
+        '%Y-%m-%d %H:%M:%S'
+    )
+    comments: List[ShowComment] = Field(max_items=10)
 
 
 class CreateAnnouncement(BaseModel):

@@ -1,6 +1,9 @@
 from core.database import get_db
 from core.db_utils import get_obj_or_404
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..categorys.models import Category
@@ -14,13 +17,15 @@ router = APIRouter()
 @router.get(
     '/',
     status_code=status.HTTP_200_OK,
-    response_model=list[schemas.ShowAnnouncement],
+    response_model=Page[schemas.ShowAnnouncement],
 )
-def get_all(db: Session = Depends(get_db)):
+def get_all(
+    db: Session = Depends(get_db)
+) -> Page[schemas.ShowAnnouncement]:
     """
     Get all announcements from the database.
     """
-    return db.query(models.Announcement).all()
+    return paginate(db, select(models.Announcement))
 
 
 @router.get(

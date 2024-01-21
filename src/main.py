@@ -3,6 +3,7 @@ import argparse
 import uvicorn
 from core.db_utils import create_superuser
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from announcements.announcements.router import router as router_announcements
 from announcements.categorys.router import router as router_category
@@ -29,6 +30,7 @@ app.include_router(
     router_comments, prefix=f'{settings.API_URL}/announcements',
     tags=['Comments'],
 )
+add_pagination(app)
 
 
 @app.get('/',)
