@@ -1,5 +1,3 @@
-from core.database import get_db
-from core.db_utils import get_obj_or_404
 from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
@@ -8,6 +6,8 @@ from sqlalchemy.orm import Session
 
 from ..announcements.models import Announcement
 from . import models, schemas
+from core.database import get_db
+from core.db_utils import get_obj_or_404
 from users import authenticate
 from users.schemas import UserInDB
 

@@ -1,15 +1,15 @@
 from datetime import timedelta
 from typing import Annotated
 
-from core.database import get_db
-from core.db_utils import check_if_already_registered, get_obj_or_404
-from core.hashing import hash_password
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm as LoginForm
 from sqlalchemy.orm import Session
 
 from . import authenticate, models, schemas
 from config import settings
+from core.database import get_db
+from core.db_utils import check_if_already_registered, get_obj_or_404
+from core.hashing import hash_password
 
 router_auth = APIRouter()
 router_user = APIRouter()

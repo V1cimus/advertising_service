@@ -1,7 +1,6 @@
 import argparse
 
 import uvicorn
-from core.db_utils import create_superuser
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
@@ -11,6 +10,7 @@ from announcements.comments.router import router as router_comments
 from announcements.complaints.router import router as router_complaints
 from announcements.review.router import router as router_review
 from config import settings
+from core.db_utils import create_superuser
 from users.router import router_auth, router_user
 
 app = FastAPI(

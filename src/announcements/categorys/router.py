@@ -1,11 +1,11 @@
 from typing import List
 
-from core.database import get_db
-from core.db_utils import check_if_already_registered, get_obj_or_404
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from . import models, schemas
+from core.database import get_db
+from core.db_utils import check_if_already_registered, get_obj_or_404
 from users import authenticate
 from users.schemas import UserInDB
 
