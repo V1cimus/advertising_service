@@ -85,7 +85,7 @@ def ban_user(
 )
 def set_admin_user(
     id: int,
-    # _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
+    _: schemas.UserInDB = Depends(authenticate.get_current_admin_user),
     db: Session = Depends(get_db),
 ):
     """
