@@ -1,0 +1,1541 @@
+openapi: 3.1.0
+info:
+  title: Advertising API
+  description: API for advertising service for test SurfIt
+  version: 1.0.0
+paths:
+  "/api/auth/register/":
+    post:
+      tags:
+      - Authentication
+      summary: Register
+      description: |-
+        Register a new user.
+        Permission: Allow Any
+      operationId: register_api_auth_register__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/BaseUser"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowUser"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/auth/login/":
+    post:
+      tags:
+      - Authentication
+      summary: Login
+      description: |-
+        Authenticates a user and generates an access token.
+        Permission: Allow Any
+      operationId: login_api_auth_login__post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              "$ref": "#/components/schemas/Body_login_api_auth_login__post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Token"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/users/{id}/set-ban/":
+    post:
+      tags:
+      - Users
+      summary: Ban User
+      description: |-
+        Resets the ban status of a user.
+        Permission: Admin
+      operationId: ban_user_api_users__id__set_ban__post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowUser"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/users/{id}/set-admin/":
+    post:
+      tags:
+      - Users
+      summary: Set Admin User
+      description: |-
+        Resets the admin status of a user identified by the given ID.
+        Permission: Admin
+      operationId: set_admin_user_api_users__id__set_admin__post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowUser"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/":
+    get:
+      tags:
+      - Announcements
+      summary: Get All
+      description: |-
+        Get all announcements from the database.
+        Permission: Allow Any
+      operationId: get_all_api_announcements__get
+      parameters:
+      - name: author_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Author Id
+      - name: category_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Category Id
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At  Gte
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At  Lt
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: "-created_at"
+          title: Order By
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Page size
+          default: 50
+          title: Size
+        description: Page size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Page_ShowAnnouncement_"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      tags:
+      - Announcements
+      summary: Create
+      description: |-
+        Creates a new announcement based on
+        the request data and adds it to the database.
+        Permission: User
+      operationId: create_api_announcements__post
+      security:
+      - OAuth2PasswordBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateAnnouncement"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowAnnouncement"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/":
+    get:
+      tags:
+      - Announcements
+      summary: Get By Id
+      description: |-
+        Get an announcement by its ID.
+        Permission: Allow Any
+      operationId: get_by_id_api_announcements__id___get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowAnnouncement"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+      - Announcements
+      summary: Update
+      description: |-
+        Updates an announcement by its ID.
+        Permission: Author
+      operationId: update_api_announcements__id___patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateAnnouncement"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowAnnouncement"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+      - Announcements
+      summary: Delete
+      description: |-
+        Deletes an announcement by its ID.
+        Permission: Author or Admin
+      operationId: delete_api_announcements__id___delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/categorys/":
+    get:
+      tags:
+      - Categorys
+      summary: Get All
+      description: |-
+        Get all categories from the database.
+        Permission: Allow Any
+      operationId: get_all_api_categorys__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  "$ref": "#/components/schemas/Category"
+                type: array
+                title: Response Get All Api Categorys  Get
+    post:
+      tags:
+      - Categorys
+      summary: Create
+      description: |-
+        Creates a new category based on
+        the request data and adds it to the database.
+        Permission: Admin
+      operationId: create_api_categorys__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ShortCategory"
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShortCategory"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      security:
+      - OAuth2PasswordBearer: []
+  "/api/categorys/{id}/":
+    get:
+      tags:
+      - Categorys
+      summary: Get By Id
+      description: |-
+        Get a category by its ID.
+        Permission: Allow Any
+      operationId: get_by_id_api_categorys__id___get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Category"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+      - Categorys
+      summary: Update
+      description: |-
+        Update a category by ID.
+        Permission: Admin
+      operationId: update_api_categorys__id___patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ShortCategory"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShortCategory"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+      - Categorys
+      summary: Delete
+      description: |-
+        Deletes a category by its ID.
+        Permission: Admin
+      operationId: delete_api_categorys__id___delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/comments/":
+    get:
+      tags:
+      - Comments
+      summary: Get All
+      description: |-
+        Get all comments from the database.
+        Permission: Allow Any
+      operationId: get_all_api_announcements__id__comments__get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Page size
+          default: 50
+          title: Size
+        description: Page size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Page_ShowComment_"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      tags:
+      - Comments
+      summary: Create
+      description: |-
+        Creates a new comment based on
+        the request data and adds it to the database.
+        Permission: User
+      operationId: create_api_announcements__id__comments__post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateComment"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowComment"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/comments/{comment_id}":
+    patch:
+      tags:
+      - Comments
+      summary: Update
+      description: |-
+        Updates a comment based on
+        the request data and adds it to the database.
+        Permission: Author
+      operationId: update_api_announcements__id__comments__comment_id__patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: comment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Comment Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateComment"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowComment"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+      - Comments
+      summary: Delete
+      description: |-
+        Deletes a comment based on
+        the request data and adds it to the database.
+        Permission: Author or Admin
+      operationId: delete_api_announcements__id__comments__comment_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: comment_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Comment Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/complaints/":
+    get:
+      tags:
+      - Complaints
+      summary: Get All
+      description: |-
+        Get all complaints from the database.
+        Permission: Admin
+      operationId: get_all_api_announcements__id__complaints__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Page size
+          default: 50
+          title: Size
+        description: Page size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Page_ShowComplaint_"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      tags:
+      - Complaints
+      summary: Create
+      description: |-
+        Creates a new complaint based on
+        the request data and adds it to the database.
+        Permission: Allow Any
+      operationId: create_api_announcements__id__complaints__post
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateComplaint"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowComplaint"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/complaints/{complaint_id}/":
+    get:
+      tags:
+      - Complaints
+      summary: Get By Id
+      description: |-
+        Get a complaint by its ID.
+        Permission: Admin
+      operationId: get_by_id_api_announcements__id__complaints__complaint_id___get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: complaint_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Complaint Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowComplaint"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/complaints/{complaint_id}/":
+    delete:
+      tags:
+      - Complaints
+      summary: Delete
+      description: |-
+        Delete a complaint by its ID.
+        Permission: Admin
+      operationId: delete_api_announcements_complaints__complaint_id___delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: complaint_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Complaint Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/reviews/":
+    get:
+      tags:
+      - Reviews
+      summary: Get All
+      description: |-
+        Get all reviews from the database.
+        Permission: Allow Any
+      operationId: get_all_api_announcements__id__reviews__get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Page size
+          default: 50
+          title: Size
+        description: Page size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Page_ShowReview_"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      tags:
+      - Reviews
+      summary: Create
+      description: |-
+        Creates a new review based on
+        the request data and adds it to the database.
+        Permission: User
+      operationId: create_api_announcements__id__reviews__post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateReview"
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowReview"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/reviews/{review_id}/":
+    get:
+      tags:
+      - Reviews
+      summary: Get By Id
+      description: |-
+        Get a review by its ID.
+        Permission: Allow Any
+      operationId: get_by_id_api_announcements__id__reviews__review_id___get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Review Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowReview"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/api/announcements/{id}/reviews/{review_id}":
+    patch:
+      tags:
+      - Reviews
+      summary: Update
+      description: |-
+        Updates a review in the database.
+        Permission: Author
+      operationId: update_api_announcements__id__reviews__review_id__patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Review Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateReview"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShowReview"
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      tags:
+      - Reviews
+      summary: Delete
+      description: |-
+        Deletes a review from the database.
+        Permission: Author or Admin
+      operationId: delete_api_announcements__id__reviews__review_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Id
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Review Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/":
+    get:
+      summary: Index
+      operationId: index__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    BaseUser:
+      properties:
+        username:
+          type: string
+          maxLength: 32
+          minLength: 3
+          title: Username
+        email:
+          type: string
+          maxLength: 256
+          format: email
+          title: Email
+        password:
+          type: string
+          minLength: 8
+          title: Password
+      type: object
+      required:
+      - username
+      - email
+      - password
+      title: BaseUser
+    Body_login_api_auth_login__post:
+      properties:
+        grant_type:
+          anyOf:
+          - type: string
+            pattern: password
+          - type: 'null'
+          title: Grant Type
+        username:
+          type: string
+          title: Username
+        password:
+          type: string
+          title: Password
+        scope:
+          type: string
+          title: Scope
+          default: ''
+        client_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Id
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+      type: object
+      required:
+      - username
+      - password
+      title: Body_login_api_auth_login__post
+    Category:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - id
+      - name
+      title: Category
+    CreateAnnouncement:
+      properties:
+        category_id:
+          type: integer
+          title: Category Id
+        title:
+          type: string
+          maxLength: 128
+          title: Title
+        content:
+          type: string
+          maxLength: 4096
+          title: Content
+      type: object
+      required:
+      - category_id
+      - title
+      - content
+      title: CreateAnnouncement
+    CreateComment:
+      properties:
+        text:
+          type: string
+          maxLength: 4096
+          title: Text
+      type: object
+      required:
+      - text
+      title: CreateComment
+    CreateComplaint:
+      properties:
+        text:
+          type: string
+          maxLength: 4096
+          title: Text
+      type: object
+      required:
+      - text
+      title: CreateComplaint
+    CreateReview:
+      properties:
+        text:
+          type: string
+          maxLength: 4096
+          title: Text
+      type: object
+      required:
+      - text
+      title: CreateReview
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Page_ShowAnnouncement_:
+      properties:
+        items:
+          items:
+            "$ref": "#/components/schemas/ShowAnnouncement"
+          type: array
+          title: Items
+        total:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Total
+        page:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Page
+        size:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Size
+        pages:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      title: Page[ShowAnnouncement]
+    Page_ShowComment_:
+      properties:
+        items:
+          items:
+            "$ref": "#/components/schemas/ShowComment"
+          type: array
+          title: Items
+        total:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Total
+        page:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Page
+        size:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Size
+        pages:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      title: Page[ShowComment]
+    Page_ShowComplaint_:
+      properties:
+        items:
+          items:
+            "$ref": "#/components/schemas/ShowComplaint"
+          type: array
+          title: Items
+        total:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Total
+        page:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Page
+        size:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Size
+        pages:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      title: Page[ShowComplaint]
+    Page_ShowReview_:
+      properties:
+        items:
+          items:
+            "$ref": "#/components/schemas/ShowReview"
+          type: array
+          title: Items
+        total:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Total
+        page:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Page
+        size:
+          anyOf:
+          - type: integer
+            minimum: 1
+          - type: 'null'
+          title: Size
+        pages:
+          anyOf:
+          - type: integer
+            minimum: 0
+          - type: 'null'
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      title: Page[ShowReview]
+    ShortCategory:
+      properties:
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: ShortCategory
+    ShowAnnouncement:
+      properties:
+        id:
+          type: integer
+          title: Id
+        author:
+          "$ref": "#/components/schemas/ShowUser"
+        title:
+          type: string
+          title: Title
+        content:
+          type: string
+          title: Content
+        category:
+          "$ref": "#/components/schemas/Category"
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At
+          default: '2024-01-21 16:16:33'
+        comments:
+          items:
+            "$ref": "#/components/schemas/ShowShortComment"
+          type: array
+          title: Comments
+      type: object
+      required:
+      - id
+      - author
+      - title
+      - content
+      - category
+      - comments
+      title: ShowAnnouncement
+    ShowComment:
+      properties:
+        id:
+          type: integer
+          title: Id
+        text:
+          type: string
+          title: Text
+        author:
+          "$ref": "#/components/schemas/ShowUser"
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At
+        announcement_id:
+          type: integer
+          title: Announcement Id
+      type: object
+      required:
+      - id
+      - text
+      - author
+      - created_at
+      - announcement_id
+      title: ShowComment
+    ShowComplaint:
+      properties:
+        id:
+          type: integer
+          title: Id
+        text:
+          type: string
+          title: Text
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        announcement:
+          "$ref": "#/components/schemas/ShowShortAnnouncement"
+      type: object
+      required:
+      - id
+      - text
+      - created_at
+      - announcement
+      title: ShowComplaint
+    ShowReview:
+      properties:
+        id:
+          type: integer
+          title: Id
+        author:
+          "$ref": "#/components/schemas/ShowUser"
+        text:
+          type: string
+          title: Text
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        announcement_id:
+          type: integer
+          title: Announcement Id
+      type: object
+      required:
+      - id
+      - author
+      - text
+      - created_at
+      - announcement_id
+      title: ShowReview
+    ShowShortAnnouncement:
+      properties:
+        id:
+          type: integer
+          title: Id
+        title:
+          type: string
+          title: Title
+        category:
+          "$ref": "#/components/schemas/Category"
+        author:
+          "$ref": "#/components/schemas/ShowUser"
+      type: object
+      required:
+      - id
+      - title
+      - category
+      - author
+      title: ShowShortAnnouncement
+    ShowShortComment:
+      properties:
+        id:
+          type: integer
+          title: Id
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
+      - id
+      - text
+      title: ShowShortComment
+    ShowUser:
+      properties:
+        id:
+          type: integer
+          title: Id
+        username:
+          type: string
+          title: Username
+        email:
+          type: string
+          format: email
+          title: Email
+        admin:
+          type: boolean
+          title: Admin
+        banned:
+          type: boolean
+          title: Banned
+      type: object
+      required:
+      - id
+      - username
+      - email
+      - admin
+      - banned
+      title: ShowUser
+    Token:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          title: Token Type
+      type: object
+      required:
+      - access_token
+      - token_type
+      title: Token
+    UpdateAnnouncement:
+      properties:
+        category_id:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Category Id
+        title:
+          anyOf:
+          - type: string
+            maxLength: 128
+          - type: 'null'
+          title: Title
+        content:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Content
+      type: object
+      title: UpdateAnnouncement
+    UpdateComment:
+      properties:
+        text:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Text
+      type: object
+      title: UpdateComment
+    UpdateReview:
+      properties:
+        text:
+          anyOf:
+          - type: string
+            maxLength: 4096
+          - type: 'null'
+          title: Text
+      type: object
+      title: UpdateReview
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: "/api/auth/login/"
